@@ -1,8 +1,8 @@
 <% if(mobile_device?) %>
   <!-- Code Viewable to mobile devices -->
-  <%= content_for :head do %>
+  <% content_for :head do %>
     <%= stylesheet_link_tag 'sencha-touch-debug' %>
-    <%= javascript_include_tag 'touch_1_0_1/sencha-touch-debug' %>
+    <%= javascript_include_tag 'sencha/sencha-touch-debug' %>
 
     <%= javascript_include_tag 'app/app' %>
     <%= javascript_include_tag 'app/util' %>
@@ -22,14 +22,14 @@
     </style>
   <% end %>
 <% else %>
- <%= content_for :head do %>
- <%= stylesheet_link_tag 'scaffold' %>
- <%= javascript_include_tag :defaults %>
- <% end %>
+  <% content_for :head do %>
+    <%= stylesheet_link_tag 'scaffold' %>
+    <%= javascript_include_tag :defaults %>
+  <% end %>
 
- <h1>Listing contacts</h1>
+  <h1>Listing contacts</h1>
 
- <table>
+  <table>
    <tr>
      <th>First name</th>
      <th>Last name</th>
@@ -40,7 +40,7 @@
      <th></th>
    </tr>
 
- <% @contacts.each do |contact| %>
+  <% @contacts.each do |contact| %>
    <tr>
      <td><%= contact.first_name %></td>
      <td><%= contact.last_name %></td>
@@ -50,13 +50,10 @@
      <td><%= link_to 'Edit', edit_contact_path(contact) %></td>
      <td><%= link_to 'Destroy', contact, :confirm => 'Are you sure?', :method => :delete %></td>
    </tr>
- <% end %>
- </table>
+  <% end %>
+  </table>
 
- <br />
+  <br />
 
- <%= link_to 'New Contact', new_contact_path %>
+  <%= link_to 'New Contact', new_contact_path %>
 <% end %>
-
-
-
