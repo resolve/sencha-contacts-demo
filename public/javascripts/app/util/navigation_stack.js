@@ -74,6 +74,14 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
     
     return false;
   },
+  clean: function () {
+    if (this.itemToRemove && (-1 != this.items.indexOf(this.itemToRemove))) {
+      this.remove(this.itemToRemove);
+      this.itemToRemove = false;
+    }
+    
+    this.itemToRemove = false;
+  },
   show: function (view, options) {
     var token = Ext.History.getToken();
     if ( ! this.itemToRemove && view != this.getActiveItem()) {
@@ -107,6 +115,7 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
     }
   },
   push: function (view, options, direct) {
+    this.clean();
     options = Ext.apply({
       on: { type: 'slide', direction: 'left' },
       off: { type: 'slide', direction: 'right' }
@@ -123,6 +132,7 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
     }
   },
   pop: function () {
+    this.clean();
     if (this.previous()) {
       var options = this.options.pop();
       this.itemToRemove = this.getActiveItem();
@@ -137,11 +147,7 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
   listeners: {
     cardswitch: function () {
       // Remove item after animation completes
-      if (this.itemToRemove && (-1 != this.items.indexOf(this.itemToRemove))) {
-        this.remove(this.itemToRemove);
-        this.itemToRemove = false;
-      }
-      this.itemToRemove = false;
+      this.clean();
     }
   }
 });
