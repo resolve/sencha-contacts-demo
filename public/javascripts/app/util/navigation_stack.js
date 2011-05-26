@@ -11,7 +11,7 @@
     registerStack: function(stack) {
       this.stack = stack;
       
-      if ( ! this.navBar.left && stack.previous()) {
+      if (this.navBar.show && ! this.navBar.left && stack.previous()) {
          // Add a back button
         this.toolbar.insert(0, {
           itemId: 'backButton',
@@ -21,10 +21,6 @@
           scope: this.stack
         });
       }
-    },
-    deregisterStack: function(stack) {
-      delete this.stack;
-      this.removeDocked(this.dockedItems.first());
     },
     initComponent: function () {
       originalInit.apply(this, arguments);

@@ -1,43 +1,5 @@
 app.views.ContactDetails = Ext.extend(Ext.Panel, {
-  scroll: 'vertical',
   styleHtmlContent: true,
-  dockedItems:[
-    {
-      xtype: 'toolbar',
-      dock: 'bottom',
-      items: [
-        {
-          id: 'delete',
-          text: 'remove',
-          ui: 'decline',
-          handler: function() {
-            Ext.dispatch({
-              controller: app.controllers.contacts,
-              action: 'destroy',
-              id: this.record.getId(),
-              animation: {type: 'slide', direction: 'right'}
-            })
-          }
-        },
-        {xtype: 'spacer'},
-        {
-          id: 'edit',
-          text: 'edit',
-          ui: 'confirm',
-          listeners: {
-            'tap': function(record) {
-              Ext.dispatch({
-                controller: app.controllers.contacts,
-                action: 'edit',
-                id: this.record.getId(),
-                animation: {type: 'slide', direction: 'left'}
-              });
-            }
-          }
-        }
-      ]
-    }
-  ],
   items: [
     {tpl: [
         '<h4>First Name</h4>',
@@ -60,6 +22,26 @@ app.views.ContactDetails = Ext.extend(Ext.Panel, {
     this.navBar = {
       show: true
     };
+    
+    this.dockedItems = [
+      {
+        xtype: 'toolbar',
+        dock: 'bottom',
+        items: [
+          {
+            id: 'delete',
+            text: 'remove',
+            ui: 'decline'
+          },
+          {xtype: 'spacer'},
+          {
+            id: 'edit',
+            text: 'edit',
+            ui: 'confirm'
+          }
+        ]
+      }
+    ];
        
     app.views.ContactDetails.superclass.initComponent.apply(this, arguments);
   }
