@@ -1,6 +1,8 @@
 Ext.regApplication({
     name: 'app',
     launch: function() {
-      this.views.viewport = new this.views.Viewport();
+      this.viewport = new UI.NavigationStack({
+        root: new this.views.ContactsList()
+      });
     }
 });

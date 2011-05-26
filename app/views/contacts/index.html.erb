@@ -6,20 +6,13 @@
 
     <%= javascript_include_tag 'app/app' %>
     <%= javascript_include_tag 'app/util' %>
+    <%= javascript_include_tag 'app/views/Viewport' %>
     <%= javascript_include_tag 'app/models/Contact' %>
-    <%= javascript_include_tag 'app/views/ContactCatalog' %>
     <%= javascript_include_tag 'app/views/ContactEdit' %>
     <%= javascript_include_tag 'app/views/ContactNew' %>
     <%= javascript_include_tag 'app/views/ContactShow' %>
     <%= javascript_include_tag 'app/views/ContactsList' %>
-    <%= javascript_include_tag 'app/views/Viewport' %>
     <%= javascript_include_tag 'app/controllers/contacts' %>
-
-    <style>
-      .synced {
-        background-color: #EDE613;
-      }
-    </style>
   <% end %>
 <% else %>
   <% content_for :head do %>

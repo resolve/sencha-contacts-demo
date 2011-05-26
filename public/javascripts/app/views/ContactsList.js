@@ -1,133 +1,71 @@
-app.views.ContactsList = Ext.extend(Ext.Panel, {
-  dockedItems: [{
-    xtype: 'toolbar',
-    title: 'Contacts',
-    items: [
-      {
-        text: 'catalog',
-        ui: 'back',
-        handler: function() {
-          Ext.dispatch({
-            controller: app.controllers.contacts,
-            action: 'catalog',
-            animation: {type: 'slide', direction: 'right'}
-          });
-        }
+app.views.ContactsList = Ext.extend(UI.StackPanel, {
+  title: 'Contacts',
+  navBar: {
+    right: {
+      text: 'new',
+      ui: 'confirm',
+      handler: function() {
+        Ext.dispatch({
+          controller: app.controllers.contacts,
+          action: 'newContact'
+        });
+      }
+    }
+  },
+  store: new Ext.data.Store({
+      model: 'app.models.Contact',
+      sorters: ['last_name'],
+      sortOnLoad: true,
+      getGroupString : function(record) {
+          return record.get('last_name')[0];
       },
-      {xtype: 'spacer'},
-//      {
-//        text: 'signature',
-//        ui: 'action',
-//        handler: function() {
-//          Ext.dispatch({
-//            controller: app.controllers.contacts,
-//            action: 'signature',
-//            animation: {type: 'slide', direction: 'left'}
-//          });
-//        }
-//      },
-      {
-        text: 'new',
-        ui: 'confirm',
-        handler: function() {
+    }),
+  initComponent: function() {    
+    var config = {
+      items: [{
+        xtype: 'list',
+        id: 'contactslist',
+        grouped: true,
+        indexBar: true,
+        store: this.store,
+        style: {
+          background: '#ffffff'
+        },
+        itemTpl: new Ext.XTemplate(
+          '<tpl for=".">',
+            '<div>',
+            '{first_name} {last_name}',
+            '</div>',
+          '</tpl>'
+        ),
+        onItemDisclosure: function(record){
           Ext.dispatch({
             controller: app.controllers.contacts,
-            action: 'newContact',
+            action: 'show',
+            id: record.getId(),
+            animation: {type: 'slide', direction: 'left'}
+          });
+        },
+        onItemTap: function(item) {
+          record = this.getRecord(item);
+          Ext.dispatch({
+            controller: app.controllers.contacts,
+            action: 'show',
+            id: record.getId(),
             animation: {type: 'slide', direction: 'left'}
           });
         }
-      }
-    ]
-  },
-  {
-    xtype: 'toolbar',
-    dock: 'bottom',
-    items: [
-      {
-        text: 'sync',
-        ui: 'confirm',
-        handler: function() {
-          app.models.synchronizeLocalToRemote();
-        }
-      }
-    ]
-  }],
-  layout: {
-    type: 'vbox',
-    align: 'center',
-    pack: 'center'
-  },
-  items: [{
-    xtype: 'list',
-    id: 'contactslist',
-    scroll: 'vertical',
-    width: Ext.Element.getViewportWidth()*0.9,
-    store: app.stores.localContacts,
-    style: {
-      background: '#ffffff'
-    },
-    itemTpl: new Ext.XTemplate(
-      '<tpl for=".">',
-        '<tpl if="!synced">',
-          '<div class="item-syncme">',
-        '</tpl>',
-        '<tpl if="synced">',
-          '<div>',
-        '</tpl>',
-        '{first_name} {last_name}',
-        '</div>',
-      '</tpl>'
-    ),
-    onItemDisclosure: function(record){
-      Ext.dispatch({
-        controller: app.controllers.contacts,
-        action: 'show',
-        id: record.getId(),
-        animation: {type: 'slide', direction: 'left'}
-      });
-    },
-    onItemTap: function(item) {
-      record = this.getRecord(item);
-      Ext.dispatch({
-        controller: app.controllers.contacts,
-        action: 'show',
-        id: record.getId(),
-        animation: {type: 'slide', direction: 'left'}
-      });
-    }
-  }],
-  initComponent: function() {
-    app.stores.localContacts.load();
+      }]
+    };
+    
+    Ext.apply(this, config);
+    
+    this.store.load();
+    this.store.sort('last_name', 'ASC');
     app.views.ContactsList.superclass.initComponent.apply(this, arguments);
   },
   listeners: {
     beforeactivate: function() {
-      highlightSync();
     }
   }
 });
-
-var highlightSync = function() {
-  /*
-   * List structure:
-   * .x-list-item
-   *   .x-list-item-body
-   *     .item-syncme - if an item needs to be synced
-   */
-  var applyClass = 'synced';
-  var syncArray = Ext.query('.item-syncme');
-  //var listArray = this.items.items[0].all.elements;
-  var child = null;
-  for(i = 0, ii = syncArray.length; i < ii; i++) {
-    child = syncArray[i];
-    // Get up to "x-list-item"
-    var p = child.parentNode.parentNode;
-    if(!p.className) {
-      p.className = applyClass;
-    } else {
-      var currentClass = p.className;
-      var newClass = currentClass + ' synced';
-      p.className = newClass;
-    }
-  }
-}
