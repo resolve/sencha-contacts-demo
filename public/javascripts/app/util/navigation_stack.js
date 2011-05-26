@@ -1,26 +1,3 @@
-app.views.Viewport = Ext.extend(Ext.Panel, {
-  fullscreen: true,
-  layout: 'card',
-  cardSwitchAnimation: 'slide',
-  initComponent: function() {
-    Ext.apply(app.views, {
-      contactsList:   new app.views.ContactsList(),
-      contactShow:    new app.views.ContactShow(),
-      contactEdit:    new app.views.ContactEdit(),
-      contactNew:     new app.views.ContactNew()
-    });
-    Ext.apply(this, {
-      items: [
-        app.views.contactsList,
-        app.views.contactShow,
-        app.views.contactEdit,
-        app.views.contactNew
-      ]
-    });
-    app.views.Viewport.superclass.initComponent.apply(this, arguments);
-  }
-});
-
 (function () {
   var originalInit = Ext.Panel.prototype.initComponent;
   
@@ -31,7 +8,6 @@ app.views.Viewport = Ext.extend(Ext.Panel, {
       left: null,
       right: null
     },
-    layout: { type: 'fit' },
     registerStack: function(stack) {
       this.stack = stack;
       
@@ -102,10 +78,39 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
     
     return false;
   },
-  push: function (view, options) {
-    // this.functions.push(return_function);
-    //    var view = options.view;
-    //
+  show: function (view, options) {
+    var token = Ext.History.getToken();
+    if ( ! this.itemToRemove && view != this.getActiveItem()) {
+      // Only if we aren't in the middle of a transition
+      options = Ext.apply({
+        on: { type: 'slide', direction: 'left' },
+        off: { type: 'slide', direction: 'right' }
+      }, options);
+    
+      if (-1 != (index = this.items.indexOf(view))) {
+        this.setActiveItem(view, false);
+        this.options.slice(0, index - 1); // Remote all unused options
+        if (this.items.slice) {
+          Ext.each(this.items.slice(index + 1), function (item) {
+            this.remove(item); // Remove view
+          });
+        }
+      } else {
+        if (this.items.length == 0) {
+          if (options.returnPath) {
+            Ext.dispatch(options.returnPath);
+            Ext.History.add(token);
+          }
+          this.push(view, options, true);
+        } else {
+          this.push(view, options);
+        }
+      }
+    } else {
+      console.log('cant do it: ' + view.title);
+    }
+  },
+  push: function (view, options, direct) {
     options = Ext.apply({
       on: { type: 'slide', direction: 'left' },
       off: { type: 'slide', direction: 'right' }
@@ -115,7 +120,7 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
     
     this.add(view);
     view.registerStack(this);
-    if ( ! this.previous()) {
+    if ( ! this.previous() || direct) {
       this.setActiveItem(view, false);
     } else {
       this.setActiveItem(view, options.on);
@@ -124,12 +129,12 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
   pop: function () {
     if (this.previous()) {
       var options = this.options.pop();
+      this.itemToRemove = this.getActiveItem();
       
-      if (options.back) {
-        options.back.call(options.scope);
+      if (options.returnPath) {
+        Ext.dispatch(options.returnPath);
       }
       
-      this.itemToRemove = this.getActiveItem();
       this.setActiveItem(this.previous(), options.off);
     }
   },
@@ -140,6 +145,7 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
         this.remove(this.itemToRemove);
         this.itemToRemove = false;
       }
+      this.itemToRemove = false;
     }
   }
 });

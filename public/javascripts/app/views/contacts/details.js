@@ -1,4 +1,4 @@
-app.views.ContactDetails= Ext.extend(Ext.Panel, {
+app.views.ContactDetails = Ext.extend(Ext.Panel, {
   scroll: 'vertical',
   styleHtmlContent: true,
   dockedItems:[
@@ -55,7 +55,14 @@ app.views.ContactDetails= Ext.extend(Ext.Panel, {
         '<h4>Phone</h4>',
         '<div class="field">{phone}</div>'
     ]}
-  ]
+  ],
+  initComponent: function () {  
+    this.navBar = {
+      show: true
+    };
+       
+    app.views.ContactDetails.superclass.initComponent.apply(this, arguments);
+  }
 });
 
 Ext.reg('contacts/details', app.views.ContactDetails);
