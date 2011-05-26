@@ -1,27 +1,7 @@
-app.views.ContactShow = Ext.extend(Ext.Panel, {
+app.views.ContactDetails= Ext.extend(Ext.Panel, {
   scroll: 'vertical',
   styleHtmlContent: true,
   dockedItems:[
-    {
-      xtype: 'toolbar',
-      dock: 'top',
-      items: [
-        {
-          id: 'back',
-          text: 'back',
-          ui: 'back',
-          listeners: {
-            'tap': function() {
-              Ext.dispatch({
-                controller: app.controllers.contacts,
-                action: 'index',
-                animation: {type: 'slide', direction: 'right'}
-              });
-            }
-          }
-        }
-      ]
-    },
     {
       xtype: 'toolbar',
       dock: 'bottom',
@@ -75,15 +55,7 @@ app.views.ContactShow = Ext.extend(Ext.Panel, {
         '<h4>Phone</h4>',
         '<div class="field">{phone}</div>'
     ]}
-  ],
-  updateWithRecord: function(record) {
-    Ext.each(this.items.items, function(item) {
-      item.update(record.data);
-    });
-    var topToolbar = this.getDockedItems()[0];
-    topToolbar.setTitle(record.get('first_name') + ' ' + record.get('last_name'));
-    var bottomToolbar = this.getDockedItems()[1];
-    bottomToolbar.getComponent('edit').record = record;
-    bottomToolbar.getComponent('delete').record = record;
-  }
+  ]
 });
+
+Ext.reg('contacts/details', app.views.ContactDetails);

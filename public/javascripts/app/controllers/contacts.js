@@ -1,21 +1,68 @@
-app.controllers.contacts = new Ext.Controller({
-  index: function(options){
-//    app.views.contactsList.items.items[0].refresh();
-//    app.views.contactsList.items.items[0].doComponentLayout();
-    app.stores.remoteContacts.load(function() {
-      app.views.viewport.setActiveItem(app.views.contactsList, options.animation);
-      app.views.contactsList.getStore();
-    });
-    
-  },
-  show: function(options) {
-    var id = parseInt(options.id);
-    var contact = app.stores.remoteContacts.getById(id);
-    if(contact) {
-      app.views.contactShow.updateWithRecord(contact);
-      app.views.viewport.setActiveItem(app.views.contactShow, options.animation);
+Ext.regController('contacts', {
+  index: function() {
+    if ( ! this.listPanel) {
+      this.listPanel = this.render({
+        xtype: 'contacts/list',
+        listeners: {
+          list: {
+            select: this.show,
+            scope: this
+          },
+          activate: function (listPanel) {
+            listPanel.list.getSelectionModel().deselectAll();
+          }
+        }
+      });
+      
+      this.listPanel.navBar.right.on({
+        tap: this.compose,
+        scope: this
+      });
+      
+      this.application.stack.push(this.listPanel);
+    } else {
+      // Redisplay
+      //alert('redisplay');
     }
   },
+  
+  
+  compose: function () {
+    this.composePanel = this.render({
+      xtype: 'contacts/compose',
+      listeners: {
+        deactivate: function (form) {
+          form.destroy(); // Destroy panel after removal
+        }
+      }
+    });
+    
+    this.composePanel.navBar.right.on({
+      tap: this.create,
+      scope: this
+    });
+    
+    this.application.stack.push(this.composePanel, {
+      back: this.index,
+      scope: this
+    });
+  },
+  
+  
+  show: function(list, record) {
+    var details = this.render({
+      xtype: 'contacts/details',
+      data: record.data,
+      title: record.get('first_name') + ' ' + record.get('last_name'),
+      listeners: {
+        deactivate: function (details) {
+          details.destroy();
+        }
+      }
+    });
+  },
+  
+  
   edit: function(options) {
     var id = parseInt(options.id);
     var contact = app.stores.remoteContacts.getById(id);

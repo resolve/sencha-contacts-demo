@@ -1,8 +1,10 @@
-Ext.regApplication({
-    name: 'app',
-    launch: function() {
-      this.viewport = new UI.NavigationStack({
-        root: new this.views.ContactsList()
-      });
-    }
+Ext.regApplication('app', {
+  defaultTarget : 'stack',
+  defaultUrl    : 'contacts/index',
+  name          : 'Contacts',
+  useHistory    : true, 
+  
+  launch: function() {
+    this.stack = new UI.NavigationStack();
+  }
 });

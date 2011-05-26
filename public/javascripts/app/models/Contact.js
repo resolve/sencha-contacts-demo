@@ -1,4 +1,4 @@
-app.models.Contact = new Ext.regModel('app.models.Contact', {
+app.models.Contact = new Ext.regModel('Contact', {
   fields: [
     {name: 'id', type: 'int'},
     {name: 'remote_id', type: 'int'},
