@@ -1,7 +1,6 @@
 app.views.ContactCompose = Ext.extend(Ext.form.FormPanel, {
   title: 'New Contact',
   scroll: 'vertical',
-  submitOnAction: true,
   items: [{
     xtype: 'fieldset',
     title: false,
@@ -20,7 +19,8 @@ app.views.ContactCompose = Ext.extend(Ext.form.FormPanel, {
       }, {
         xtype: 'emailfield',
         name: 'email',
-        label: 'Email'
+        label: 'Email',
+        placeHolder: 'you@example.com'
       }, {
         xtype: 'textfield',
         inputType: 'tel',
@@ -32,8 +32,11 @@ app.views.ContactCompose = Ext.extend(Ext.form.FormPanel, {
   initComponent: function () {
     this.navBar = {
       show: true,
+      left: {
+        text: 'Cancel'
+      },
       right: {
-        text: 'Save',
+        text: 'Done',
         ui: 'confirm'
       }
     }
@@ -41,4 +44,4 @@ app.views.ContactCompose = Ext.extend(Ext.form.FormPanel, {
     app.views.ContactCompose.superclass.initComponent.apply(this, arguments);
   }
 });
-Ext.reg('contacts/compose', app.views.ContactCompose);
+Ext.reg('contacts/edit', app.views.ContactCompose);

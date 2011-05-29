@@ -1,3 +1,99 @@
+Ext.apply(Ext.data.validations,{
+  emailMessage: 'is not a valid e-mail address',
+  email: function(config, value) {
+    if (value.length == 0 || value.match(/^.+@.+$/)){
+      return true;
+    } else {
+      return false;
+    }
+  },
+  phoneMessage: 'is not a valid phone number',
+  phone: function(config, value) {
+    if (value.length == 0 || value.match(/^\+?[\d-]+$/)){
+      return true;
+    } else {
+      return false;
+    }
+  }
+});
+
+
+(function () {
+  var originalInitRenderData = Ext.form.Field.prototype.initRenderData;
+  var originalApplyRenderSelectors = Ext.form.Field.prototype.applyRenderSelectors;
+  var originalOnRender = Ext.form.Field.prototype.onRender;
+  
+  var tpl = Ext.form.Field.prototype.renderTpl;
+  tpl.splice(0, 0, '<div class="x-field-wrap">');
+  tpl.push('</div><div class="x-field-errors"><tpl for="errors">{.} </tpl></div>');
+  Ext.form.Field.prototype.renderTpl = tpl;
+  
+  Ext.override(Ext.form.Field, {
+    errors: [],
+    applyRenderSelectors: function () {
+      this.renderSelectors = Ext.apply(this.renderSelectors, {
+        errorsEl: '.x-field-errors'
+      });
+      
+      originalApplyRenderSelectors.apply(this, arguments);
+    },
+    initRenderData: function () {
+      originalInitRenderData.apply(this, arguments);
+      
+      this.renderData.errors = this.errors;
+      return this.renderData;
+    },
+    onRender: function () {
+      originalOnRender.apply(this, arguments);
+      
+      if (this.errors.length > 0) {
+        this.el.addCls('errors');
+      }
+    },
+    setErrors: function(errors) {
+      this.errors = errors;
+      if (errors.length > 0) {
+        var message = [];
+        Ext.each(errors, function (error) {
+          if ('none' != error.message) {
+            message.push(error.message);
+          }
+        });
+        if (message.length > 0) {
+          this.el.addCls('error');
+        } else {
+          this.el.addCls('error-nomsg');
+        }
+        this.errorsEl.setHTML(message.join(' '));
+      } else {
+        this.el.removeCls('error');
+        this.el.removeCls('error-nomsg');
+        this.errorsEl.setHTML('');
+      }
+    }
+  });
+})();
+
+(function () {
+  Ext.override(Ext.form.FormPanel, {
+    setErrors: function(errors) {
+      this.removeCls('errors');
+      if (errors.length > 0) {
+        this.addCls('errors');
+        Ext.defer(function () { this.removeCls('errors'); }, 100, this);
+      }
+      
+      Ext.each(this.query('field'), function (field) {
+        if (field_errors = errors.getByField(field.getName())) {
+          field.setErrors(field_errors);
+        } else {
+          field.setErrors([]); // Blank out any existing errors
+        }
+      });
+    }
+  });
+})();
+
 (function () {
   var originalInit = Ext.Panel.prototype.initComponent;
   
@@ -11,15 +107,18 @@
     registerStack: function(stack) {
       this.stack = stack;
       
-      if (this.navBar.show && ! this.navBar.left && stack.previous()) {
-         // Add a back button
-        this.toolbar.insert(0, {
-          itemId: 'backButton',
-          text: this.stack.previous().title,
-          ui: 'back',
-          handler: this.stack.pop,
-          scope: this.stack
-        });
+      if (this.navBar.show) {
+        // Add a back button
+        if ( ! this.navBar.left || ( ! this.navBar.left.handler && ! this.navBar.left.listeners)) {
+          if (stack.previous()) {
+            this.toolbar.insert(0, Ext.apply({
+              text: this.stack.previous().title,
+              ui: 'back',
+              handler: this.stack.pop,
+              scope: this.stack
+            }, this.navBar.left));
+          }
+        }
       }
     },
     initComponent: function () {
@@ -83,9 +182,10 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
     this.itemToRemove = false;
   },
   show: function (view, options) {
-    var token = Ext.History.getToken();
     if ( ! this.itemToRemove && view != this.getActiveItem()) {
       // Only if we aren't in the middle of a transition
+      
+      var token = Ext.History.getToken();
       options = Ext.apply({
         on: { type: 'slide', direction: 'left' },
         off: { type: 'slide', direction: 'right' }
@@ -110,8 +210,6 @@ UI.NavigationStack = Ext.extend(Ext.Container, {
           this.push(view, options);
         }
       }
-    } else {
-      console.log('cant do it: ' + view.title);
     }
   },
   push: function (view, options, direct) {

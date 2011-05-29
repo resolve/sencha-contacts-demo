@@ -39,9 +39,8 @@ Ext.regController('contacts', {
   
   
   compose: function () {
-    console.log('compose');
     this.form = this.render({
-      xtype: 'contacts/compose',
+      xtype: 'contacts/edit',
       listeners: {
         deactivate: function (form) {
           form.destroy(); // Destroy panel after removal
@@ -59,14 +58,24 @@ Ext.regController('contacts', {
         controller: 'contacts',
         action    : 'index',
         historyUrl: 'contacts/index'
-      }
+      },
+      on  : { type: 'slide', direction: 'up', cover: true },
+      off : { type: 'slide', direction: 'down', reveal: true }
     });
   },
   
   
   create: function () {
-    Ext.getStore('contacts').create(this.form.getValues());
-    this.application.stack.pop(); // Will automatically call index
+    var contact = Ext.ModelMgr.create(this.form.getValues(), 'Contact');
+    var validation = contact.validate();
+    if ( ! validation.isValid()) {
+      this.form.setErrors(validation);
+    } else {
+      // Save here
+      this.application.stack.pop();
+    }
+    // Ext.getStore('contacts').create(this.form.getValues());
+    //     this.application.stack.pop(); // Will automatically call index
   },
   
   

@@ -5176,3 +5176,117 @@ div.x-sheet.x-msgbox .x-toolbar.x-docked-bottom {
     -webkit-transform: rotate(330deg);
   }
 }
+
+
+
+
+
+
+
+.x-form-fieldset .x-field:first-child > :first-child:not(.x-input-toggle), 
+.x-form-fieldset .x-field:first-child > :first-child input, 
+.x-form-fieldset .x-field:first-child > :first-child textarea {
+  -webkit-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+}
+.x-form-fieldset .x-field:first-child > :first-child.x-field-wrap, 
+.x-form-fieldset .x-field:first-child > .x-field-wrap > :first-child:not(.x-input-toggle), 
+.x-form-fieldset .x-field:first-child > .x-field-wrap > :first-child input, 
+.x-form-fieldset .x-field:first-child > .x-field-wrap > :first-child textarea {
+  -webkit-border-top-left-radius: 0.4em;
+  border-top-left-radius: 0.4em;
+}
+
+.x-form-fieldset .x-field:first-child > :last-child:not(.x-input-toggle), 
+.x-form-fieldset .x-field:first-child > :last-child input, 
+.x-form-fieldset .x-field:first-child > :last-child textarea {
+  -webkit-border-top-right-radius: 0;
+  border-top-right-radius: 0;
+}
+.x-form-fieldset .x-field:first-child > :first-child.x-field-wrap, 
+.x-form-fieldset .x-field:first-child > .x-field-wrap > :last-child:not(.x-input-toggle), 
+.x-form-fieldset .x-field:first-child > .x-field-wrap > :last-child input, 
+.x-form-fieldset .x-field:first-child > .x-field-wrap > :last-child textarea {
+  -webkit-border-top-right-radius: 0.4em;
+  border-top-right-radius: 0.4em;
+}
+
+
+.x-form-fieldset .x-field:last-child > :first-child:not(.x-input-toggle), 
+.x-form-fieldset .x-field:last-child > :first-child input, 
+.x-form-fieldset .x-field:last-child > :first-child textarea {
+  -webkit-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-wrap, 
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-wrap > :first-child:not(.x-input-toggle), 
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-wrap > :first-child input, 
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-wrap > :first-child textarea,
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-error {
+  -webkit-border-bottom-left-radius: 0.4em;
+  border-bottom-left-radius: 0.4em;
+}
+
+.x-form-fieldset .x-field:last-child > :last-child:not(.x-input-toggle), 
+.x-form-fieldset .x-field:last-child > :last-child input, 
+.x-form-fieldset .x-field:last-child > :last-child textarea {
+  -webkit-border-bottom-right-radius: 0
+  border-bottom-right-radius: 0;
+}
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-wrap, 
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-wrap > :last-child:not(.x-input-toggle), 
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-wrap > :last-child input, 
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-wrap > :last-child textarea, 
+.x-form-fieldset .x-field:last-child:not(.error) > .x-field-error {
+  -webkit-border-bottom-right-radius: 0.4em;
+  border-bottom-right-radius: 0.4em;
+}
+
+
+
+
+
+
+
+
+
+.x-field {
+  display: block;
+}
+.x-field-wrap {
+  display: -webkit-box;
+  display: box;
+  background: #fff;
+}
+
+.x-field:last-child .x-field-errors {
+  -webkit-border-bottom-left-radius: 0.4em;
+  border-bottom-left-radius: 0.4em;
+  -webkit-border-bottom-right-radius: 0.4em;
+  border-bottom-right-radius: 0.4em;
+}
+
+.x-field-errors {
+  display: none;
+}
+.error .x-field-errors {
+  display: block;
+  font-size: 0.8em;
+  padding: 0.75em;
+  background: #DDD;
+  color: gray;
+  text-shadow: #fff 0 1px 1px;
+  border-top: 1px solid #F1F1F1;
+}
+
+.error .x-form-label,
+.error-nomsg .x-form-label {
+  color: #FF3C22;
+}
+
+.x-form.errors .x-panel-body {
+  background: #FF3C22;
+}
+.x-form.errors .x-form-fieldset-instructions {
+  color: #fff;
+}
