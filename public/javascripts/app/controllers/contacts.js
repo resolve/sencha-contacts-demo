@@ -72,6 +72,9 @@ Ext.regController('contacts', {
       this.form.setErrors(validation);
     } else {
       // Save here
+      var store = Ext.getStore('contacts');
+      store.add(contact);
+      store.sync();
       this.application.stack.pop();
     }
     // Ext.getStore('contacts').create(this.form.getValues());
